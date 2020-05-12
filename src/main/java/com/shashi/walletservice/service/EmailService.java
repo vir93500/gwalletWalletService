@@ -1,6 +1,7 @@
 package com.shashi.walletservice.service;
 import com.shashi.walletservice.Model.User;
 import com.shashi.walletservice.Util.EmailUtil;
+import com.shashi.walletservice.Util.SmsUtil;
 import org.springframework.util.StringUtils;
 
 import java.util.Properties;
@@ -22,9 +23,9 @@ import java.io.IOException;
 import javax.mail.internet.AddressException;
 
 public class EmailService {
-     public static void sendEmail(String toEmail, int amt, String user){
+     public static void sendEmail(String toEmail, int amt, String user,String number){
         final String fromEmail = "writetovirendra@gmail.com"; //requires valid gmail id
-        final String password = "virendramonu93500"; // correct password for gmail id
+        final String password = "Virendrakushwaha93500"; // correct password for gmail id
         //final String toEmail = "umangd98@gmail.com"; // can be any email id
 
         System.out.println("SSLEmail Start");
@@ -45,13 +46,16 @@ public class EmailService {
 
         Session session = Session.getDefaultInstance(props, auth);
         System.out.println("Session created");
-        if(user.equalsIgnoreCase("sender"))
-        EmailUtil.sendEmail(session, toEmail,"Mail from e_wallet", String.format("Amonut of Rs. %s debited",amt));
-
-         if(user.equalsIgnoreCase("receiver"))
-             EmailUtil.sendEmail(session, toEmail,"Mail from e_wallet", String.format("Amonut of Rs. %s credited",amt));
-
-
+        if(user.equalsIgnoreCase("sender")) {
+            EmailUtil.sendEmail(session, toEmail, "Mail from e_wallet", String.format("Amount of Rs. %s debited", amt));
+            int smsResponseCode = SmsUtil.sendSms(String.format("Amount of Rs. %s debited", amt),number);
+            System.out.println("Sms send to the sender::"+smsResponseCode);
+        }
+         if(user.equalsIgnoreCase("receiver")) {
+             EmailUtil.sendEmail(session, toEmail, "Mail from e_wallet", String.format("Amount of Rs. %s credited", amt));
+             int smsResponseCode = SmsUtil.sendSms(String.format("Amount of Rs. %s credited", amt),number);
+             System.out.println("Sms send to the receiver::"+smsResponseCode);
+         }
      }
 
     public static void sendEmailWithAttachments(String host, String port,

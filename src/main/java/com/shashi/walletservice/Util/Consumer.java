@@ -37,20 +37,20 @@ public class Consumer {
 
         System.out.println("t_id in consumer-"+t_id);
 
-       /* Optional<Transaction> transaction = trepository.findById(t_id);
+        Optional<Transaction> transaction = trepository.findById(t_id);
         System.out.println("transaction--"+transaction.toString());
 
         Transaction transaction1 = transaction.get();
         int amt = transaction1.getAmount();
         User sender = userService.getAUser(transaction1.getSid());
-        User receiver = userService.getAUser(transaction1.getRid());*/
+        User receiver = userService.getAUser(transaction1.getRid());
 
-        int amt = 50;
-        User sender = userService.getAUser(3);
-        User receiver = userService.getAUser(2);
+        /*EmailService.sendEmail(sender.getEmail(),amt,"sender");
+        EmailService.sendEmail(receiver.getEmail(),amt,"receiver");*/
 
-        EmailService.sendEmail(sender.getEmail(),amt,"sender");
-        EmailService.sendEmail(receiver.getEmail(),amt,"receiver");
+        EmailService.sendEmail(sender.getEmail(),amt,"sender",sender.getMobile());
+        EmailService.sendEmail(receiver.getEmail(),amt,"receiver",receiver.getMobile());
+
     }
     private void sendTxnHistory(String id) {
         String[] arrOfStr = id.split("t", 0);
@@ -64,7 +64,7 @@ public class Consumer {
                 (ArrayList<Transaction>) trepository.findBysidAndrid(id1);
 
         User user1 = userService.getAUser(id1);
-        String filename ="test.csv";
+        String filename ="TransactionHistory.csv";
         try {
             FileWriter fw = new FileWriter(filename);
 
@@ -98,11 +98,9 @@ public class Consumer {
             String host = "smtp.gmail.com";
             String port = "587";
             String mailFrom = "writetovirendra@gmail.com";
-            String password = "virendramonu93500";
-            String toAddress = user1.getEmail();
-
-
-
+            String password = "Virendrakushwaha93500";
+            String toAddress = "vir93500@yahoo.com";
+           // String toAddress = user1.getEmail();
 
             EmailService.sendEmailWithAttachments(host,port,mailFrom,password,toAddress,"Txn History","PFA txn history",filename);
         } catch (Exception e) {
